@@ -1,17 +1,52 @@
 // Check if path to hash module is still correct
-const hash = require("../hash");
-const crypto = require('crypto');
+const { hash, uuid } = require("../hash");
 
-const pgFunc = ()
+const dbPool = require("./psql_pool") // db connection
 
-module.exports = db;
-
-db.query 
+const getBins = () => {
+  pool.query('SELECT bin_path FROM bins ORDER BY id DESC', (error, results) => {
+    if (error) {
+      throw error;
+    }
+     return results.rows;
+  })
+}
 
 // New Endpoint
+const addNewBin = () => {
+  const uuid = uuid();
+  const hashedPath = hash(uuid);
 
-const uuid = crypto.randomUUID();
-const newHash = hash(uuid);
+  dbPool.query('INSERT INTO bin (id, bin_path) VALUES ($1, $2);', [uuid, hashedPath], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    return;
+  });
+}
 
+const getBinId = (bin_path) => {
+  pool.query('SELECT id FROM bins WHERE bin_path = $1', [bin_path], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    return results.rows[0];
+  })
+}
 
-INSERT INTO bin (id, bin_path) VALUES (uuid, newHash);
+const getBinRequests = (bin_path) => {
+  const binId = getBinId(bin_path)
+
+  pool.query('SELECT timestamp, http_method, http_path, mongo_id FROM requests WHERE bin_id = $1 ORDER BY id DESC', [binId], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    return results.rows;
+  })
+}
+
+const addNewRequest = (bin_path, mongoId) => {
+
+}
+
+module.exports = {  }

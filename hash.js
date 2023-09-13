@@ -1,8 +1,11 @@
 const crypto = require('crypto');
 
 const hash = string => {
-  newHash = crypto.createHash('sha256').update(string).digest('hex');
-  return newHash.substring(0, 15);
+  return crypto.createHash('shake256', {outputLength: 8}).update(string).digest('hex');
 }
 
-module.exports = hash;
+const uuid = () => {
+  return crypto.randomUUID();
+}
+
+module.exports = { hash, uuid };
