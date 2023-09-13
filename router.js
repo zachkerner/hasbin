@@ -1,20 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const app = express();
-const mongoose = require('mongoose')
-const model = require('./database/model.js')
-const db = require("./database/database.js")
-mongoose.connect("mongodb://localhost:27017/RecycleBin")
+const mongo = require('./database/mongo.js')
+const helpers = require('./helpers.js')
 
-router.get('/', async (req, res) => {
-  console.log(model)
-  const request = await model.Bin.create({ bin_path: "1", request: 'hello world' })
-	await request.save()
-  console.log('saved')
+router.post('/', (req, res) => {
+  console.log(helpers.hash(req.body.title))
+})
+
+router.get('/bins/:bin_path', async (req, res) => {
+  rawData = helpers.parse_request(req)
+  let mongoId = await mongo.push(req.params.bin_path, rawData)
 });
 
-app.use('/', router)
-
-app.listen(3000, () => {
-  console.log('listening on port', 3000);
-});
+module.exports = router;
