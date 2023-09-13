@@ -1,7 +1,7 @@
 CREATE DATABASE recycledb;
 
 CREATE TABLE bin(
-  id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id uuid PRIMARY KEY,
   bin_path VARCHAR(255) NOT NULL,
   created_at TIMESTAMP
 );
