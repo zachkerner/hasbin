@@ -1,52 +1,48 @@
 // Check if path to hash module is still correct
-const { hash, uuid } = require("../hash");
+const helper = require('./../helpers.js')
+const uuid = require('uuid');
 
-const dbPool = require("./psql_pool") // db connection
+const pool = require("./psql_pool") // db connection
 
-const getBins = () => {
-  pool.query('SELECT bin_path FROM bins ORDER BY id DESC', (error, results) => {
-    if (error) {
-      throw error;
-    }
-     return results.rows;
-  })
+const getAllBins = async () => {
+  let results = await pool.query('SELECT bin_path FROM bin ORDER BY id DESC')
+  return results.rows;
 }
 
 // New Endpoint
-const addNewBin = () => {
-  const uuid = uuid();
-  const hashedPath = hash(uuid);
+const addNewBin = async () => {
+  const uuid = helper.uuid();
+  const hashedPath = helper.hash(uuid);
 
-  dbPool.query('INSERT INTO bin (id, bin_path) VALUES ($1, $2);', [uuid, hashedPath], (error, results) => {
-    if (error) {
-      throw error;
-    }
-    return;
-  });
+  await pool.query('INSERT INTO bin (id, bin_path) VALUES ($1, $2);', [uuid, hashedPath]);
 }
 
-const getBinId = (bin_path) => {
-  pool.query('SELECT id FROM bins WHERE bin_path = $1', [bin_path], (error, results) => {
-    if (error) {
-      throw error;
-    }
-    return results.rows[0];
-  })
+// async function test() {
+//   await addNewBin()
+//   console.log('done')
+// }
+// test()
+
+const getBinId = async (bin_path) => {
+  let results = await pool.query('SELECT id FROM bin WHERE bin_path = $1', [bin_path])
+  return uuid.parse(results.rows[0].id);
 }
 
-const getBinRequests = (bin_path) => {
-  const binId = getBinId(bin_path)
-
-  pool.query('SELECT timestamp, http_method, http_path, mongo_id FROM requests WHERE bin_id = $1 ORDER BY id DESC', [binId], (error, results) => {
-    if (error) {
-      throw error;
-    }
-    return results.rows;
-  })
+const getAllRequests = async () => {
+  let results = await pool.query('SELECT received_at, http_method, http_path, body FROM request ORDER BY id DESC')
+  return results.rows;
 }
 
-const addNewRequest = (bin_path, mongoId) => {
+const addNewRequest = async (bin_path, mongoId, received_at, method, path) => {
+  const bin_id = await getBinId(bin_path)
 
+  await pool.query('INSERT INTO request (bin_id, mongo_id, received_at, http_method, http_path, body) VALUES ($1, $2, $3, $4, $5, $6);', [bin_id, mongoId, received_at, method, path])
 }
 
-module.exports = {  }
+module.exports = { 
+  getAllBins,
+  addNewBin,
+  getBinId,
+  getAllRequests,
+  addNewRequest
+}

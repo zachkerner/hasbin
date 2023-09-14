@@ -1,8 +1,7 @@
 const crypto = require('crypto');
 
 const hash = string => {
-  newHash = crypto.createHash('sha256').update(string).digest('hex');
-  return newHash.substring(0, 15);
+  return crypto.createHash('shake256', {outputLength: 8}).update(string).digest('hex');
 }
 
 const uuid = () => {
@@ -11,9 +10,10 @@ const uuid = () => {
 
 function parse_request(req) {
   const bodyContent = req.body ? req.body : ""
+  let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
   const rawData = JSON.stringify({
     method: req.method,
-    url: req.url,
+    url: fullUrl,
     headers: req.headers,
     body: bodyContent
   })
