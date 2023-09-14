@@ -10,9 +10,10 @@ const uuid = () => {
 
 function parse_request(req) {
   const bodyContent = req.body ? req.body : ""
+  let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
   const rawData = JSON.stringify({
     method: req.method,
-    url: req.url,
+    url: fullUrl,
     headers: req.headers,
     body: bodyContent
   })

@@ -1,6 +1,7 @@
 const pg = require('pg');
 
 let config = {
+  // user: 'tai',
     host: 'localhost', // Server hosting the postgres database
     port: 5432, // env var: PGPORT
     database: 'recycledb', // CHANGE THIS LINE! env var: PGDATABASE, this is likely the one thing you need to change to get up and running
@@ -22,6 +23,7 @@ pool.on('connect', () => {
 pool.on('error', (err) => {
   console.log('Unexpected error on idle client', err);
   process.exit(-1);
+  // console.error('PostgreSQL pool error:', err);
 });
 
 module.exports = pool;

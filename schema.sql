@@ -13,5 +13,6 @@ CREATE TABLE request(
   mongo_id VARCHAR(255) NOT NULL,
   received_at VARCHAR(255),
   http_method VARCHAR(8),
-  http_path VARCHAR(255)
+  http_path VARCHAR(255),
+  body VARCHAR(255)
 );
