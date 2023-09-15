@@ -36,8 +36,8 @@ const P = (props) => {
   console.log(props)
   return (
     <div>
-    {props.bins.map(bin => 
-      <p>{"http://localhost:3000/" + bin.bin_path}</p>
+    {props.bins.map((bin, idx) => 
+      <p key={idx}>{"http://localhost:3000/" + bin.bin_path}</p>
     )}
     </div>
   )

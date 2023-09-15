@@ -33,10 +33,10 @@ const getAllRequests = async () => {
   return results.rows;
 }
 
-const addNewRequest = async (bin_path, mongoId, received_at, method, path) => {
+const addNewRequest = async (bin_path, mongoId, received_at, method, path, body) => {
   const bin_id = await getBinId(bin_path)
 
-  await pool.query('INSERT INTO request (bin_id, mongo_id, received_at, http_method, http_path, body) VALUES ($1, $2, $3, $4, $5, $6);', [bin_id, mongoId, received_at, method, path])
+  await pool.query('INSERT INTO request (bin_id, mongo_id, received_at, http_method, http_path, body) VALUES ($1, $2, $3, $4, $5, $6);', [bin_id, mongoId, received_at, method, path, body])
 }
 
 module.exports = { 

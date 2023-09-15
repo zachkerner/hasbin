@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
   res.redirect('http://localhost:5173');
 })
 
-router.get('/bins/:bin_path', async (req, res) => {
+router.post('/bins/:bin_path', async (req, res) => {
   rawData = helpers.parse_request(req)
   const bodyContent = req.body ? req.body : ""
   let mongoId = await mongo.push(req.params.bin_path, rawData)
